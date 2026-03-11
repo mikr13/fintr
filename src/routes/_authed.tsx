@@ -1,6 +1,9 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useConvexAuth } from "convex/react";
 import { useEffect } from "react";
+import { Sidebar } from "~/components/layout/sidebar";
+import { AccountsPanel } from "~/components/layout/accounts-panel";
+import { Breadcrumbs } from "~/components/layout/breadcrumbs";
 
 export const Route = createFileRoute("/_authed")({
   component: AuthedLayout,
@@ -50,5 +53,18 @@ function AuthedLayout() {
     return null;
   }
 
-  return <Outlet />;
+  return (
+    <div className="flex h-screen">
+      <Sidebar />
+      <AccountsPanel />
+      <main className="flex-1 overflow-auto">
+        <div className="border-b border-border px-6 py-3">
+          <Breadcrumbs />
+        </div>
+        <div className="p-6">
+          <Outlet />
+        </div>
+      </main>
+    </div>
+  );
 }
