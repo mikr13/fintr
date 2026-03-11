@@ -12,7 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthedTransactionsRouteImport } from './routes/_authed/transactions'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
+import { Route as AuthedBudgetsRouteImport } from './routes/_authed/budgets'
+import { Route as AuthedAccountsAccountIdRouteImport } from './routes/_authed/accounts/$accountId'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 
@@ -29,9 +32,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedTransactionsRoute = AuthedTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedBudgetsRoute = AuthedBudgetsRouteImport.update({
+  id: '/budgets',
+  path: '/budgets',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedAccountsAccountIdRoute = AuthedAccountsAccountIdRouteImport.update({
+  id: '/accounts/$accountId',
+  path: '/accounts/$accountId',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
@@ -49,13 +67,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
+  '/budgets': typeof AuthedBudgetsRoute
   '/dashboard': typeof AuthedDashboardRoute
+  '/transactions': typeof AuthedTransactionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/budgets': typeof AuthedBudgetsRoute
   '/dashboard': typeof AuthedDashboardRoute
+  '/transactions': typeof AuthedTransactionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -64,13 +87,21 @@ export interface FileRoutesById {
   '/_authed': typeof AuthedRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/_authed/budgets': typeof AuthedBudgetsRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
+  '/_authed/transactions': typeof AuthedTransactionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/budgets'
+    | '/dashboard'
+    | '/transactions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/dashboard'
+  to: '/' | '/login' | '/register' | '/budgets' | '/dashboard' | '/transactions'
   id:
     | '__root__'
     | '/'
@@ -78,7 +109,9 @@ export interface FileRouteTypes {
     | '/_authed'
     | '/_auth/login'
     | '/_auth/register'
+    | '/_authed/budgets'
     | '/_authed/dashboard'
+    | '/_authed/transactions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -110,11 +143,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/transactions': {
+      id: '/_authed/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AuthedTransactionsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/dashboard': {
       id: '/_authed/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthedDashboardRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/budgets': {
+      id: '/_authed/budgets'
+      path: '/budgets'
+      fullPath: '/budgets'
+      preLoaderRoute: typeof AuthedBudgetsRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_auth/register': {
@@ -147,11 +194,15 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface AuthedRouteChildren {
+  AuthedBudgetsRoute: typeof AuthedBudgetsRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
+  AuthedTransactionsRoute: typeof AuthedTransactionsRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedBudgetsRoute: AuthedBudgetsRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
+  AuthedTransactionsRoute: AuthedTransactionsRoute,
 }
 
 const AuthedRouteWithChildren =
