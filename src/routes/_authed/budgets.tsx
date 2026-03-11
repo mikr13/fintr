@@ -22,10 +22,12 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { PlusIcon } from "~/components/icons/plus";
+import { PageTransition } from "~/components/layout/page-transition";
 import { MonthNavigator } from "~/components/budgets/month-navigator";
 import { BudgetChart } from "~/components/budgets/budget-chart";
 import { CategoryRow } from "~/components/budgets/category-row";
 import { formatCurrency } from "~/lib/utils";
+import { toast } from "sonner";
 import type { Id } from "../../../convex/_generated/dataModel.js";
 
 interface CategoryDoc {
@@ -101,21 +103,30 @@ function BudgetsPage() {
     const amount = parseFloat(budgetAmount);
     if (isNaN(amount) || amount <= 0) return;
 
-    await createBudget({
-      categoryId: selectedCategory as Id<"categories">,
-      amount,
-      month,
-      year,
-      currency,
-    });
-
-    setSelectedCategory("");
-    setBudgetAmount("");
-    setDialogOpen(false);
+    try {
+      await createBudget({
+        categoryId: selectedCategory as Id<"categories">,
+        amount,
+        month,
+        year,
+        currency,
+      });
+      toast.success("Budget created");
+      setSelectedCategory("");
+      setBudgetAmount("");
+      setDialogOpen(false);
+    } catch {
+      toast.error("Failed to create budget");
+    }
   }
 
   async function handleSeedDefaults() {
-    await seedDefaults();
+    try {
+      await seedDefaults();
+      toast.success("Default categories added");
+    } catch {
+      toast.error("Failed to add default categories");
+    }
   }
 
   const chartSegments =
@@ -127,6 +138,7 @@ function BudgetsPage() {
 
   if (isLoading) {
     return (
+      <PageTransition>
       <div className="flex items-center justify-center py-20">
         <svg
           className="h-6 w-6 animate-spin text-primary"
@@ -148,11 +160,13 @@ function BudgetsPage() {
           />
         </svg>
       </div>
+      </PageTransition>
     );
   }
 
   if (!hasCategories) {
     return (
+      <PageTransition>
       <div>
         <div className="flex items-center justify-between">
           <div>
@@ -205,10 +219,12 @@ function BudgetsPage() {
           </CardContent>
         </Card>
       </div>
+      </PageTransition>
     );
   }
 
   return (
+    <PageTransition>
     <div>
       <div className="flex items-center justify-between">
         <div>
@@ -381,6 +397,7 @@ function BudgetsPage() {
         </DialogContent>
       </Dialog>
     </div>
+    </PageTransition>
   );
 }
 

@@ -34,6 +34,7 @@ import {
   CalendarIcon,
   ChevronDown,
 } from "lucide-react";
+import { toast } from "sonner";
 import type { TransactionType } from "~/lib/constants";
 
 interface EditTransaction {
@@ -151,6 +152,7 @@ export function TransactionForm({
               ? (transferToAccountId as Id<"accounts">)
               : undefined,
         });
+        toast.success("Transaction updated");
       } else {
         await createTx({
           type,
@@ -170,10 +172,13 @@ export function TransactionForm({
               : undefined,
           source: "web",
         });
+        toast.success("Transaction added");
       }
 
       resetForm();
       onOpenChange(false);
+    } catch {
+      toast.error(isEditing ? "Failed to update transaction" : "Failed to add transaction");
     } finally {
       setSubmitting(false);
     }

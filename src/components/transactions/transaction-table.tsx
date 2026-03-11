@@ -75,9 +75,10 @@ export function TransactionTable({
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
           <Inbox className="h-7 w-7 text-muted-foreground" />
         </div>
-        <h3 className="font-heading text-lg font-semibold">No entries found</h3>
+        <h3 className="font-heading text-lg font-semibold">No transactions found</h3>
         <p className="mt-1 max-w-sm text-center text-sm text-muted-foreground">
-          Try adding a entry, editing filters or refining your search
+          Add a transaction, adjust your filters, or refine your search to see
+          results here.
         </p>
       </div>
     );

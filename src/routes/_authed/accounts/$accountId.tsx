@@ -41,6 +41,7 @@ import {
 } from "~/components/ui/dialog";
 import { Separator } from "~/components/ui/separator";
 import { AccountForm } from "~/components/accounts/account-form";
+import { PageTransition } from "~/components/layout/page-transition";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authed/accounts/$accountId")({
@@ -258,6 +259,7 @@ function AccountDetailPage() {
   };
 
   return (
+    <PageTransition>
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
@@ -394,5 +396,6 @@ function AccountDetailPage() {
         </DialogContent>
       </Dialog>
     </div>
+    </PageTransition>
   );
 }

@@ -8,7 +8,9 @@ import { Button } from "~/components/ui/button";
 import { PlusIcon } from "~/components/icons/plus";
 import { TrendingUpIcon } from "~/components/icons/trending-up";
 import { TrendingDownIcon } from "~/components/icons/trending-down";
+import { PageTransition } from "~/components/layout/page-transition";
 import { Receipt, Upload } from "lucide-react";
+import { toast } from "sonner";
 import { formatCurrency } from "~/lib/utils";
 import { TransactionFilters } from "~/components/transactions/transaction-filters";
 import { TransactionTable } from "~/components/transactions/transaction-table";
@@ -77,10 +79,15 @@ function TransactionsPage() {
 
   const handleBulkDelete = useCallback(async () => {
     if (selectedIds.size === 0) return;
-    await bulkDeleteMut({
-      ids: Array.from(selectedIds) as Id<"transactions">[],
-    });
-    setSelectedIds(new Set());
+    try {
+      await bulkDeleteMut({
+        ids: Array.from(selectedIds) as Id<"transactions">[],
+      });
+      toast.success(`${selectedIds.size} transaction${selectedIds.size > 1 ? "s" : ""} deleted`);
+      setSelectedIds(new Set());
+    } catch {
+      toast.error("Failed to delete transactions");
+    }
   }, [selectedIds, bulkDeleteMut]);
 
   const handleFormClose = useCallback(
@@ -92,6 +99,7 @@ function TransactionsPage() {
   );
 
   return (
+    <PageTransition>
     <div>
       <div className="flex items-start justify-between">
         <h1 className="font-heading text-3xl font-bold tracking-tight">
@@ -191,6 +199,7 @@ function TransactionsPage() {
         editTransaction={editTx}
       />
     </div>
+    </PageTransition>
   );
 }
 

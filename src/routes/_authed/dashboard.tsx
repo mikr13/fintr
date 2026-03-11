@@ -15,6 +15,7 @@ import {
 import { PlusIcon } from "~/components/icons/plus";
 import { NetWorthCard } from "~/components/dashboard/net-worth-card";
 import { AssetsBreakdown } from "~/components/dashboard/assets-breakdown";
+import { PageTransition } from "~/components/layout/page-transition";
 import { Wallet, Receipt } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/dashboard")({
@@ -30,6 +31,7 @@ function DashboardPage() {
   const hasAccounts = accounts !== undefined && accounts.length > 0;
 
   return (
+    <PageTransition>
     <div>
       <div className="flex items-start justify-between">
         <div>
@@ -116,5 +118,6 @@ function DashboardPage() {
         </DialogContent>
       </Dialog>
     </div>
+    </PageTransition>
   );
 }
