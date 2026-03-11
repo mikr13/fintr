@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
@@ -36,8 +36,9 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isRegistering = useRef(false);
 
-  if (isAuthenticated) {
+  if (isAuthenticated && !isRegistering.current) {
     void navigate({ to: "/" });
     return null;
   }
@@ -55,6 +56,7 @@ function RegisterPage() {
     }
 
     setIsLoading(true);
+    isRegistering.current = true;
 
     try {
       await signIn("password", {
@@ -63,8 +65,13 @@ function RegisterPage() {
         flow: "signUp",
         name: `${firstName} ${lastName}`.trim(),
       });
-      void navigate({ to: "/" });
+
+      sessionStorage.setItem("fintr_pending_household", householdName || `${firstName}'s Household`);
+
+      isRegistering.current = false;
+      void navigate({ to: "/dashboard" });
     } catch {
+      isRegistering.current = false;
       setError(
         "Could not create account. The email may already be registered."
       );

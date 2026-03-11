@@ -6,41 +6,31 @@ import {
 
 export const storePendingSecret = internalMutation({
   args: {
-    tokenIdentifier: v.string(),
+    email: v.string(),
     pendingTotpSecret: v.string(),
   },
   handler: async (ctx, args) => {
-    const users = await ctx.db.query("users").collect();
-    const user = users.find((u) => {
-      const record = u as Record<string, unknown>;
-      return (
-        record.tokenIdentifier === args.tokenIdentifier ||
-        record.email === args.tokenIdentifier
-      );
-    });
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
     if (!user) throw new Error("User not found");
 
     await ctx.db.patch(user._id, {
       pendingTotpSecret: args.pendingTotpSecret,
-    } as Record<string, unknown>);
+    });
   },
 });
 
 export const getUser = internalQuery({
   args: {
-    tokenIdentifier: v.string(),
+    email: v.string(),
   },
   handler: async (ctx, args) => {
-    const users = await ctx.db.query("users").collect();
-    return (
-      users.find((u) => {
-        const record = u as Record<string, unknown>;
-        return (
-          record.tokenIdentifier === args.tokenIdentifier ||
-          record.email === args.tokenIdentifier
-        );
-      }) ?? null
-    );
+    return await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
   },
 });
 
@@ -55,19 +45,15 @@ export const getUserById = internalQuery({
 
 export const enableTotp = internalMutation({
   args: {
-    tokenIdentifier: v.string(),
+    email: v.string(),
     totpSecret: v.string(),
     hashedRecoveryCodes: v.array(v.string()),
   },
   handler: async (ctx, args) => {
-    const users = await ctx.db.query("users").collect();
-    const user = users.find((u) => {
-      const record = u as Record<string, unknown>;
-      return (
-        record.tokenIdentifier === args.tokenIdentifier ||
-        record.email === args.tokenIdentifier
-      );
-    });
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
     if (!user) throw new Error("User not found");
 
     await ctx.db.patch(user._id, {
@@ -75,23 +61,19 @@ export const enableTotp = internalMutation({
       totpEnabled: true,
       recoveryCodes: args.hashedRecoveryCodes,
       pendingTotpSecret: undefined,
-    } as Record<string, unknown>);
+    });
   },
 });
 
 export const disableTotp = internalMutation({
   args: {
-    tokenIdentifier: v.string(),
+    email: v.string(),
   },
   handler: async (ctx, args) => {
-    const users = await ctx.db.query("users").collect();
-    const user = users.find((u) => {
-      const record = u as Record<string, unknown>;
-      return (
-        record.tokenIdentifier === args.tokenIdentifier ||
-        record.email === args.tokenIdentifier
-      );
-    });
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
     if (!user) throw new Error("User not found");
 
     await ctx.db.patch(user._id, {
@@ -99,7 +81,7 @@ export const disableTotp = internalMutation({
       totpSecret: undefined,
       recoveryCodes: undefined,
       pendingTotpSecret: undefined,
-    } as Record<string, unknown>);
+    });
   },
 });
 
@@ -111,6 +93,6 @@ export const updateRecoveryCodes = internalMutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.userId, {
       recoveryCodes: args.recoveryCodes,
-    } as Record<string, unknown>);
+    });
   },
 });

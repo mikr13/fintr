@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server.js";
-import type { Id } from "./_generated/dataModel.js";
 import { getAuthenticatedUser } from "./helpers.js";
 
 // ─── Queries ────────────────────────────────────────────────────────────────
@@ -14,8 +13,7 @@ export const list = query({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return { transactions: [], nextCursor: null, hasMore: false };
 
     const limit = args.limit ?? 20;
@@ -76,8 +74,7 @@ export const getSummary = query({
   args: {},
   handler: async (ctx) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId)
       return { total: 0, incomeTotal: 0, expenseTotal: 0 };
 
@@ -116,8 +113,7 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households">;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     const account = await ctx.db.get(args.accountId);
@@ -193,8 +189,7 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households">;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     const existing = await ctx.db.get(args.id);
@@ -254,8 +249,7 @@ export const remove = mutation({
   args: { id: v.id("transactions") },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households">;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     const tx = await ctx.db.get(args.id);
@@ -302,8 +296,7 @@ export const bulkDelete = mutation({
   args: { ids: v.array(v.id("transactions")) },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households">;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     for (const id of args.ids) {

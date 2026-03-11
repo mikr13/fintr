@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server.js";
-import type { Id } from "./_generated/dataModel.js";
 import { getAuthenticatedUser, requireHouseholdAdmin } from "./helpers.js";
 
 // ─── Mutations ──────────────────────────────────────────────────────────────
@@ -27,7 +26,7 @@ export const create = mutation({
       role: "admin",
     });
 
-    await ctx.db.patch(user._id, { householdId } as Record<string, unknown>);
+    await ctx.db.patch(user._id, { householdId });
 
     return householdId;
   },
@@ -62,8 +61,7 @@ export const createInvite = mutation({
     const user = await getAuthenticatedUser(ctx);
     await requireHouseholdAdmin(ctx, user._id);
 
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households">;
+    const householdId = user.householdId!;
 
     const code = Math.random().toString(36).substring(2, 10).toUpperCase();
     const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
@@ -108,7 +106,7 @@ export const useInvite = mutation({
 
     await ctx.db.patch(user._id, {
       householdId: invite.householdId,
-    } as Record<string, unknown>);
+    });
 
     await ctx.db.patch(invite._id, { usedBy: user._id });
 
@@ -128,8 +126,7 @@ export const removeMember = mutation({
       throw new Error("Cannot remove yourself");
     }
 
-    const callerHouseholdId = (caller as Record<string, unknown>)
-      .householdId as Id<"households">;
+    const callerHouseholdId = caller.householdId!;
 
     const membership = await ctx.db
       .query("householdMembers")
@@ -142,7 +139,7 @@ export const removeMember = mutation({
     await ctx.db.delete(membership._id);
     await ctx.db.patch(args.userId, {
       householdId: undefined,
-    } as Record<string, unknown>);
+    });
   },
 });
 
@@ -158,8 +155,7 @@ export const updateMemberRole = mutation({
     const member = await ctx.db.get(args.memberId);
     if (!member) throw new Error("Member not found");
 
-    const callerHouseholdId = (caller as Record<string, unknown>)
-      .householdId as Id<"households">;
+    const callerHouseholdId = caller.householdId!;
     if (member.householdId !== callerHouseholdId) {
       throw new Error("Member does not belong to your household");
     }
@@ -174,8 +170,7 @@ export const get = query({
   args: {},
   handler: async (ctx) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return null;
 
     return await ctx.db.get(householdId);
@@ -186,8 +181,7 @@ export const getMembers = query({
   args: {},
   handler: async (ctx) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return [];
 
     const members = await ctx.db
@@ -198,12 +192,11 @@ export const getMembers = query({
     const result = await Promise.all(
       members.map(async (member) => {
         const memberUser = await ctx.db.get(member.userId);
-        const userData = memberUser as Record<string, unknown> | null;
         return {
           memberId: member._id,
           userId: member.userId,
-          name: userData?.name as string | undefined,
-          email: userData?.email as string | undefined,
+          name: memberUser?.name,
+          email: memberUser?.email,
           role: member.role,
         };
       }),

@@ -20,16 +20,20 @@ const routeLabels: Record<string, string> = {
 export function Breadcrumbs() {
   const matches = useMatches();
 
+  const seen = new Set<string>();
   const crumbs = matches
     .filter((match) => {
       const path = match.pathname;
-      return path !== "/_authed" && !path.startsWith("/_");
+      if (path === "/" || path.startsWith("/_")) return false;
+      const label = routeLabels[path] ?? path.split("/").pop() ?? "";
+      if (!label || seen.has(label)) return false;
+      seen.add(label);
+      return true;
     })
     .map((match) => ({
       path: match.pathname,
       label: routeLabels[match.pathname] ?? match.pathname.split("/").pop() ?? "",
-    }))
-    .filter((crumb) => crumb.label);
+    }));
 
   if (crumbs.length === 0) return null;
 

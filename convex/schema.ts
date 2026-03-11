@@ -4,6 +4,32 @@ import { v } from "convex/values";
 
 export default defineSchema({
   ...authTables,
+  users: defineTable({
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.float64()),
+    image: v.optional(v.string()),
+    isAnonymous: v.optional(v.boolean()),
+    name: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.float64()),
+    householdId: v.optional(v.id("households")),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    preferences: v.optional(
+      v.object({
+        currency: v.optional(v.string()),
+        locale: v.optional(v.string()),
+        dateFormat: v.optional(v.string()),
+        theme: v.optional(v.string()),
+        timezone: v.optional(v.string()),
+        country: v.optional(v.string()),
+      }),
+    ),
+    totpEnabled: v.optional(v.boolean()),
+    totpSecret: v.optional(v.string()),
+    pendingTotpSecret: v.optional(v.string()),
+    recoveryCodes: v.optional(v.array(v.string())),
+  }).index("by_email", ["email"]),
 
   households: defineTable({
     name: v.string(),
@@ -118,7 +144,8 @@ export default defineSchema({
     label: v.string(),
   })
     .index("by_user", ["userId"])
-    .index("by_prefix", ["prefix"]),
+    .index("by_prefix", ["prefix"])
+    .index("by_hashed_key", ["hashedKey"]),
 
   apiTokens: defineTable({
     hashedToken: v.string(),
@@ -145,5 +172,6 @@ export default defineSchema({
     metadata: v.optional(v.string()),
   })
     .index("by_user", ["userId"])
-    .index("by_timestamp", ["timestamp"]),
+    .index("by_timestamp", ["timestamp"])
+    .index("by_user_timestamp", ["userId", "timestamp"]),
 });

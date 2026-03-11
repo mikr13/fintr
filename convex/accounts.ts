@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server.js";
-import type { Id } from "./_generated/dataModel.js";
 import { getAuthenticatedUser } from "./helpers.js";
 
 // ─── Queries ────────────────────────────────────────────────────────────────
@@ -9,8 +8,7 @@ export const list = query({
   args: {},
   handler: async (ctx) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return [];
 
     return await ctx.db
@@ -24,8 +22,7 @@ export const getNetWorth = query({
   args: {},
   handler: async (ctx) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return { total: 0, assetsTotal: 0, debtsTotal: 0 };
 
     const accounts = await ctx.db
@@ -58,8 +55,7 @@ export const getNetWorthHistory = query({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return [];
 
     const accounts = await ctx.db
@@ -117,8 +113,7 @@ export const get = query({
   args: { accountId: v.id("accounts") },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return null;
 
     const account = await ctx.db.get(args.accountId);
@@ -134,8 +129,7 @@ export const getBalanceHistory = query({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return [];
 
     const account = await ctx.db.get(args.accountId);
@@ -174,8 +168,7 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     const accountId = await ctx.db.insert("accounts", {
@@ -207,8 +200,7 @@ export const updateBalance = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     const account = await ctx.db.get(args.accountId);
@@ -248,8 +240,7 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     const account = await ctx.db.get(args.accountId);
@@ -272,8 +263,7 @@ export const remove = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) throw new Error("No household");
 
     const account = await ctx.db.get(args.accountId);

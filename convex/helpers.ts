@@ -17,8 +17,7 @@ export async function requireHouseholdAdmin(
   const user = await ctx.db.get(userId);
   if (!user) throw new Error("User not found");
 
-  const householdId = (user as Record<string, unknown>)
-    .householdId as Id<"households"> | undefined;
+  const householdId = user.householdId;
   if (!householdId) throw new Error("No household");
 
   const member = await ctx.db

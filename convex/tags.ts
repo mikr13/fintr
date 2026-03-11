@@ -3,18 +3,16 @@ import { query, mutation } from "./_generated/server.js";
 import type { Id } from "./_generated/dataModel.js";
 import { getAuthenticatedUser } from "./helpers.js";
 
-function getHouseholdId(user: Record<string, unknown>): Id<"households"> {
-  const householdId = user.householdId as Id<"households"> | undefined;
-  if (!householdId) throw new Error("No household");
-  return householdId;
+function getHouseholdId(user: { householdId?: Id<"households"> }): Id<"households"> {
+  if (!user.householdId) throw new Error("No household");
+  return user.householdId;
 }
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return [];
 
     return await ctx.db
@@ -31,7 +29,7 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = getHouseholdId(user as Record<string, unknown>);
+    const householdId = getHouseholdId(user);
 
     return await ctx.db.insert("tags", {
       householdId,
@@ -49,7 +47,7 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = getHouseholdId(user as Record<string, unknown>);
+    const householdId = getHouseholdId(user);
 
     const tag = await ctx.db.get(args.id);
     if (!tag || tag.householdId !== householdId) {
@@ -72,7 +70,7 @@ export const remove = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
-    const householdId = getHouseholdId(user as Record<string, unknown>);
+    const householdId = getHouseholdId(user);
 
     const tag = await ctx.db.get(args.id);
     if (!tag || tag.householdId !== householdId) {

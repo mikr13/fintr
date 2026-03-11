@@ -5,7 +5,6 @@ import {
   internalMutation,
   internalQuery,
 } from "./_generated/server.js";
-import type { Id } from "./_generated/dataModel.js";
 import { getAuthenticatedUser } from "./helpers.js";
 
 async function hashString(input: string): Promise<string> {
@@ -215,14 +214,15 @@ export const revokeAllTokens = mutation({
 export const cleanupExpiredTokens = internalMutation({
   args: {},
   handler: async (ctx) => {
-    const allTokens = await ctx.db.query("apiTokens").collect();
     const now = Date.now();
+    const expiredTokens = await ctx.db
+      .query("apiTokens")
+      .withIndex("by_expiry", (q) => q.lt("expiresAt", now))
+      .collect();
     let cleaned = 0;
-    for (const token of allTokens) {
-      if (token.expiresAt < now || token.revoked) {
-        await ctx.db.delete(token._id);
-        cleaned++;
-      }
+    for (const token of expiredTokens) {
+      await ctx.db.delete(token._id);
+      cleaned++;
     }
     return { cleaned };
   },
@@ -258,7 +258,7 @@ export const getAuditLog = query({
     const user = await getAuthenticatedUser(ctx);
     const entries = await ctx.db
       .query("apiAuditLog")
-      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .withIndex("by_user_timestamp", (q) => q.eq("userId", user._id))
       .order("desc")
       .take(50);
     return entries;
@@ -270,15 +270,16 @@ export const getAuditLog = query({
 export const lookupApiKey = internalQuery({
   args: { hashedKey: v.string() },
   handler: async (ctx, args) => {
-    const allKeys = await ctx.db.query("apiKeys").collect();
-    const key = allKeys.find((k) => k.hashedKey === args.hashedKey);
+    const key = await ctx.db
+      .query("apiKeys")
+      .withIndex("by_hashed_key", (q) => q.eq("hashedKey", args.hashedKey))
+      .first();
     if (!key) return null;
 
     const user = await ctx.db.get(key.userId);
     if (!user) return null;
 
-    const householdId = (user as Record<string, unknown>)
-      .householdId as Id<"households"> | undefined;
+    const householdId = user.householdId;
     if (!householdId) return null;
 
     return { keyId: key._id, userId: key.userId, householdId };

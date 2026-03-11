@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useConvexAuth } from "convex/react";
-import { useEffect } from "react";
+import { useConvexAuth, useMutation } from "convex/react";
+import { api } from "convex/_generated/api.js";
+import { useEffect, useRef } from "react";
 import { Sidebar } from "~/components/layout/sidebar";
 import { AccountsPanel } from "~/components/layout/accounts-panel";
 import { Breadcrumbs } from "~/components/layout/breadcrumbs";
@@ -12,12 +13,23 @@ export const Route = createFileRoute("/_authed")({
 function AuthedLayout() {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const navigate = useNavigate();
+  const createHousehold = useMutation(api.households.create);
+  const householdCreated = useRef(false);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       void navigate({ to: "/login" });
     }
   }, [isAuthenticated, isLoading, navigate]);
+
+  useEffect(() => {
+    if (!isAuthenticated || householdCreated.current) return;
+    const pending = sessionStorage.getItem("fintr_pending_household");
+    if (!pending) return;
+    householdCreated.current = true;
+    sessionStorage.removeItem("fintr_pending_household");
+    void createHousehold({ name: pending });
+  }, [isAuthenticated, createHousehold]);
 
   if (isLoading) {
     return (

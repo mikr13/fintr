@@ -62,7 +62,7 @@ export const generateSecret = action({
     const uri = totp.toString();
 
     await ctx.runMutation(internal.totpMutations.storePendingSecret, {
-      tokenIdentifier: identity.tokenIdentifier ?? identity.subject,
+      email: identity.tokenIdentifier ?? identity.subject,
       pendingTotpSecret: base32Secret,
     });
 
@@ -79,12 +79,11 @@ export const verifyAndEnable = action({
     if (!identity) throw new Error("Not authenticated");
 
     const user = await ctx.runQuery(internal.totpMutations.getUser, {
-      tokenIdentifier: identity.tokenIdentifier ?? identity.subject,
+      email: identity.tokenIdentifier ?? identity.subject,
     });
     if (!user) throw new Error("User not found");
 
-    const pendingSecret = (user as Record<string, unknown>)
-      .pendingTotpSecret as string | undefined;
+    const pendingSecret = user.pendingTotpSecret;
     if (!pendingSecret) {
       throw new Error("No pending 2FA setup. Please start the setup again.");
     }
@@ -101,7 +100,7 @@ export const verifyAndEnable = action({
     const hashedCodes = await Promise.all(recoveryCodes.map(hashCode));
 
     await ctx.runMutation(internal.totpMutations.enableTotp, {
-      tokenIdentifier: identity.tokenIdentifier ?? identity.subject,
+      email: identity.tokenIdentifier ?? identity.subject,
       totpSecret: pendingSecret,
       hashedRecoveryCodes: hashedCodes,
     });
@@ -121,12 +120,10 @@ export const verifyToken = action({
     });
     if (!user) return false;
 
-    const totpSecret = (user as Record<string, unknown>).totpSecret as
-      | string
-      | undefined;
+    const totpSecret = user.totpSecret;
     if (!totpSecret) return false;
 
-    const email = (user as Record<string, unknown>).email as string | undefined;
+    const email = user.email;
     const totp = createTotpInstance(totpSecret, email ?? "user");
     const delta = totp.validate({ token: args.token, window: 1 });
 
@@ -141,7 +138,7 @@ export const disable = action({
     if (!identity) throw new Error("Not authenticated");
 
     await ctx.runMutation(internal.totpMutations.disableTotp, {
-      tokenIdentifier: identity.tokenIdentifier ?? identity.subject,
+      email: identity.tokenIdentifier ?? identity.subject,
     });
   },
 });
@@ -157,9 +154,7 @@ export const useRecoveryCode = action({
     });
     if (!user) return false;
 
-    const storedCodes = (user as Record<string, unknown>).recoveryCodes as
-      | string[]
-      | undefined;
+    const storedCodes = user.recoveryCodes;
     if (!storedCodes || storedCodes.length === 0) return false;
 
     const hashed = await hashCode(args.code);

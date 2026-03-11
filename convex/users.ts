@@ -20,7 +20,7 @@ export const updateProfile = mutation({
   handler: async (ctx, args) => {
     const user = await getAuthenticatedUser(ctx);
 
-    const patch: Record<string, unknown> = {};
+    const patch: { firstName?: string; lastName?: string } = {};
     if (args.firstName !== undefined) patch.firstName = args.firstName;
     if (args.lastName !== undefined) patch.lastName = args.lastName;
 
@@ -53,7 +53,7 @@ export const updatePreferences = mutation({
     if (Object.keys(preferences).length > 0) {
       await ctx.db.patch(user._id, {
         preferences,
-      } as Record<string, unknown>);
+      });
     }
   },
 });
