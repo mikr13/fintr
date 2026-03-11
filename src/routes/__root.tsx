@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-router'
 import * as React from 'react'
 import type { QueryClient } from '@tanstack/react-query'
+import { Toaster } from '~/components/ui/sonner'
 import appCss from '~/styles/app.css?url'
 
 export const Route = createRootRouteWithContext<{
@@ -21,10 +22,23 @@ export const Route = createRootRouteWithContext<{
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Fintr',
       },
     ],
     links: [
+      {
+        rel: 'preconnect',
+        href: 'https://fonts.googleapis.com',
+      },
+      {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossOrigin: 'anonymous',
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap',
+      },
       { rel: 'stylesheet', href: appCss },
       {
         rel: 'apple-touch-icon',
@@ -61,12 +75,13 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html className="dark">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="min-h-screen bg-background text-foreground antialiased">
         {children}
+        <Toaster />
         <Scripts />
       </body>
     </html>

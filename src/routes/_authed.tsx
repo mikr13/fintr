@@ -1,16 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useConvexAuth } from "convex/react";
 import { useEffect } from "react";
-import { useCurrentUser } from "~/hooks/use-current-user";
 
-export const Route = createFileRoute("/")({
-  component: IndexPage,
+export const Route = createFileRoute("/_authed")({
+  component: AuthedLayout,
 });
 
-function IndexPage() {
+function AuthedLayout() {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const navigate = useNavigate();
-  const { user } = useCurrentUser();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -52,19 +50,5 @@ function IndexPage() {
     return null;
   }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="font-heading text-4xl font-bold tracking-tight">
-          Welcome{user?.name ? `, ${user.name}` : ""}
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          Your household finance tracker
-        </p>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Dashboard coming soon — the full app shell will be built in the next phase.
-        </p>
-      </div>
-    </div>
-  );
+  return <Outlet />;
 }
