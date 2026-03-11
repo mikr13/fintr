@@ -76,6 +76,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
   '/budgets': typeof AuthedBudgetsRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/transactions': typeof AuthedTransactionsRoute
@@ -87,6 +88,7 @@ export interface FileRoutesById {
   '/_authed': typeof AuthedRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/_authed/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
   '/_authed/budgets': typeof AuthedBudgetsRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/transactions': typeof AuthedTransactionsRoute
@@ -97,11 +99,12 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/accounts/$accountId'
     | '/budgets'
     | '/dashboard'
     | '/transactions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/budgets' | '/dashboard' | '/transactions'
+  to: '/' | '/login' | '/register' | '/accounts/$accountId' | '/budgets' | '/dashboard' | '/transactions'
   id:
     | '__root__'
     | '/'
@@ -109,6 +112,7 @@ export interface FileRouteTypes {
     | '/_authed'
     | '/_auth/login'
     | '/_auth/register'
+    | '/_authed/accounts/$accountId'
     | '/_authed/budgets'
     | '/_authed/dashboard'
     | '/_authed/transactions'
@@ -142,6 +146,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authed/accounts/$accountId': {
+      id: '/_authed/accounts/$accountId'
+      path: '/accounts/$accountId'
+      fullPath: '/accounts/$accountId'
+      preLoaderRoute: typeof AuthedAccountsAccountIdRouteImport
+      parentRoute: typeof AuthedRoute
     }
     '/_authed/transactions': {
       id: '/_authed/transactions'
@@ -194,12 +205,14 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface AuthedRouteChildren {
+  AuthedAccountsAccountIdRoute: typeof AuthedAccountsAccountIdRoute
   AuthedBudgetsRoute: typeof AuthedBudgetsRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedTransactionsRoute: typeof AuthedTransactionsRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedAccountsAccountIdRoute: AuthedAccountsAccountIdRoute,
   AuthedBudgetsRoute: AuthedBudgetsRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedTransactionsRoute: AuthedTransactionsRoute,
