@@ -22,6 +22,7 @@ interface Transaction {
   amount: number;
   currency: string;
   date: string;
+  [key: string]: unknown;
 }
 
 interface TransactionTableProps {

@@ -55,7 +55,7 @@ function TransactionsPage() {
   }, []);
 
   const handleRowClick = useCallback(
-    (tx: (typeof transactions)[number]) => {
+    (tx: { _id: Id<"transactions">; type: string; description: string; amount: number; currency: string; date: string; [key: string]: unknown }) => {
       setEditTx({
         _id: tx._id,
         type: tx.type,
@@ -65,7 +65,7 @@ function TransactionsPage() {
         currency: tx.currency,
         categoryId: tx.categoryId as Id<"categories"> | undefined,
         date: tx.date,
-        notes: tx.notes,
+        notes: tx.notes as string | undefined,
         transferToAccountId: tx.transferToAccountId as
           | Id<"accounts">
           | undefined,

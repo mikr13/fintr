@@ -285,7 +285,7 @@ function AccountDetailPage() {
               )}
             </div>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              Created {formatDate(account._creationTime)}
+              Created {formatDate(new Date(account._creationTime))}
             </p>
           </div>
         </div>
