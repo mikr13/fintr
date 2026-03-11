@@ -1,4 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { api } from "convex/_generated/api.js";
+import type { Id } from "convex/_generated/dataModel.js";
 import { useMutation, useQuery } from "convex/react";
 import { format, parseISO } from "date-fns";
 import {
@@ -41,8 +43,6 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { ACCOUNT_TYPES, PERIOD_OPTIONS, type AccountTypeId } from "~/lib/constants";
 import { cn, formatCurrency, formatDate } from "~/lib/utils";
-import { api } from "../convex/_generated/api.js";
-import type { Id } from "../convex/_generated/dataModel.js";
 
 export const Route = createFileRoute("/_authed/accounts/$accountId")({
   component: AccountDetailPage,
