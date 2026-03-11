@@ -9,16 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as SettingsTagsRouteImport } from './routes/settings/tags'
+import { Route as SettingsSecurityRouteImport } from './routes/settings/security'
+import { Route as SettingsRulesRouteImport } from './routes/settings/rules'
+import { Route as SettingsProfileRouteImport } from './routes/settings/profile'
+import { Route as SettingsPreferencesRouteImport } from './routes/settings/preferences'
+import { Route as SettingsMerchantsRouteImport } from './routes/settings/merchants'
+import { Route as SettingsCategoriesRouteImport } from './routes/settings/categories'
+import { Route as SettingsApiKeyRouteImport } from './routes/settings/api-key'
 import { Route as AuthedTransactionsRouteImport } from './routes/_authed/transactions'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedBudgetsRouteImport } from './routes/_authed/budgets'
-import { Route as AuthedAccountsAccountIdRouteImport } from './routes/_authed/accounts/$accountId'
+import { Route as AuthVerify2faRouteImport } from './routes/_auth/verify-2fa'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AuthedAccountsAccountIdRouteImport } from './routes/_authed/accounts/$accountId'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthedRoute = AuthedRouteImport.update({
   id: '/_authed',
   getParentRoute: () => rootRouteImport,
@@ -31,6 +47,51 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsTagsRoute = SettingsTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsSecurityRoute = SettingsSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsRulesRoute = SettingsRulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsProfileRoute = SettingsProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsPreferencesRoute = SettingsPreferencesRouteImport.update({
+  id: '/preferences',
+  path: '/preferences',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsMerchantsRoute = SettingsMerchantsRouteImport.update({
+  id: '/merchants',
+  path: '/merchants',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsCategoriesRoute = SettingsCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsApiKeyRoute = SettingsApiKeyRouteImport.update({
+  id: '/api-key',
+  path: '/api-key',
+  getParentRoute: () => SettingsRoute,
 } as any)
 const AuthedTransactionsRoute = AuthedTransactionsRouteImport.update({
   id: '/transactions',
@@ -47,10 +108,10 @@ const AuthedBudgetsRoute = AuthedBudgetsRouteImport.update({
   path: '/budgets',
   getParentRoute: () => AuthedRoute,
 } as any)
-const AuthedAccountsAccountIdRoute = AuthedAccountsAccountIdRouteImport.update({
-  id: '/accounts/$accountId',
-  path: '/accounts/$accountId',
-  getParentRoute: () => AuthedRoute,
+const AuthVerify2faRoute = AuthVerify2faRouteImport.update({
+  id: '/verify-2fa',
+  path: '/verify-2fa',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
@@ -62,70 +123,154 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthedAccountsAccountIdRoute = AuthedAccountsAccountIdRouteImport.update({
+  id: '/accounts/$accountId',
+  path: '/accounts/$accountId',
+  getParentRoute: () => AuthedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
-  '/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
+  '/verify-2fa': typeof AuthVerify2faRoute
   '/budgets': typeof AuthedBudgetsRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/transactions': typeof AuthedTransactionsRoute
+  '/settings/api-key': typeof SettingsApiKeyRoute
+  '/settings/categories': typeof SettingsCategoriesRoute
+  '/settings/merchants': typeof SettingsMerchantsRoute
+  '/settings/preferences': typeof SettingsPreferencesRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/rules': typeof SettingsRulesRoute
+  '/settings/security': typeof SettingsSecurityRoute
+  '/settings/tags': typeof SettingsTagsRoute
+  '/settings/': typeof SettingsIndexRoute
+  '/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
-  '/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
+  '/verify-2fa': typeof AuthVerify2faRoute
   '/budgets': typeof AuthedBudgetsRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/transactions': typeof AuthedTransactionsRoute
+  '/settings/api-key': typeof SettingsApiKeyRoute
+  '/settings/categories': typeof SettingsCategoriesRoute
+  '/settings/merchants': typeof SettingsMerchantsRoute
+  '/settings/preferences': typeof SettingsPreferencesRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/rules': typeof SettingsRulesRoute
+  '/settings/security': typeof SettingsSecurityRoute
+  '/settings/tags': typeof SettingsTagsRoute
+  '/settings': typeof SettingsIndexRoute
+  '/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_authed': typeof AuthedRouteWithChildren
+  '/settings': typeof SettingsRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
-  '/_authed/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
+  '/_auth/verify-2fa': typeof AuthVerify2faRoute
   '/_authed/budgets': typeof AuthedBudgetsRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/transactions': typeof AuthedTransactionsRoute
+  '/settings/api-key': typeof SettingsApiKeyRoute
+  '/settings/categories': typeof SettingsCategoriesRoute
+  '/settings/merchants': typeof SettingsMerchantsRoute
+  '/settings/preferences': typeof SettingsPreferencesRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/rules': typeof SettingsRulesRoute
+  '/settings/security': typeof SettingsSecurityRoute
+  '/settings/tags': typeof SettingsTagsRoute
+  '/settings/': typeof SettingsIndexRoute
+  '/_authed/accounts/$accountId': typeof AuthedAccountsAccountIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/settings'
     | '/login'
     | '/register'
-    | '/accounts/$accountId'
+    | '/verify-2fa'
     | '/budgets'
     | '/dashboard'
     | '/transactions'
+    | '/settings/api-key'
+    | '/settings/categories'
+    | '/settings/merchants'
+    | '/settings/preferences'
+    | '/settings/profile'
+    | '/settings/rules'
+    | '/settings/security'
+    | '/settings/tags'
+    | '/settings/'
+    | '/accounts/$accountId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/accounts/$accountId' | '/budgets' | '/dashboard' | '/transactions'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/verify-2fa'
+    | '/budgets'
+    | '/dashboard'
+    | '/transactions'
+    | '/settings/api-key'
+    | '/settings/categories'
+    | '/settings/merchants'
+    | '/settings/preferences'
+    | '/settings/profile'
+    | '/settings/rules'
+    | '/settings/security'
+    | '/settings/tags'
+    | '/settings'
+    | '/accounts/$accountId'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_authed'
+    | '/settings'
     | '/_auth/login'
     | '/_auth/register'
-    | '/_authed/accounts/$accountId'
+    | '/_auth/verify-2fa'
     | '/_authed/budgets'
     | '/_authed/dashboard'
     | '/_authed/transactions'
+    | '/settings/api-key'
+    | '/settings/categories'
+    | '/settings/merchants'
+    | '/settings/preferences'
+    | '/settings/profile'
+    | '/settings/rules'
+    | '/settings/security'
+    | '/settings/tags'
+    | '/settings/'
+    | '/_authed/accounts/$accountId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
   AuthedRoute: typeof AuthedRouteWithChildren
+  SettingsRoute: typeof SettingsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authed': {
       id: '/_authed'
       path: ''
@@ -147,12 +292,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authed/accounts/$accountId': {
-      id: '/_authed/accounts/$accountId'
-      path: '/accounts/$accountId'
-      fullPath: '/accounts/$accountId'
-      preLoaderRoute: typeof AuthedAccountsAccountIdRouteImport
-      parentRoute: typeof AuthedRoute
+    '/settings/': {
+      id: '/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/tags': {
+      id: '/settings/tags'
+      path: '/tags'
+      fullPath: '/settings/tags'
+      preLoaderRoute: typeof SettingsTagsRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/security': {
+      id: '/settings/security'
+      path: '/security'
+      fullPath: '/settings/security'
+      preLoaderRoute: typeof SettingsSecurityRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/rules': {
+      id: '/settings/rules'
+      path: '/rules'
+      fullPath: '/settings/rules'
+      preLoaderRoute: typeof SettingsRulesRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/profile': {
+      id: '/settings/profile'
+      path: '/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof SettingsProfileRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/preferences': {
+      id: '/settings/preferences'
+      path: '/preferences'
+      fullPath: '/settings/preferences'
+      preLoaderRoute: typeof SettingsPreferencesRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/merchants': {
+      id: '/settings/merchants'
+      path: '/merchants'
+      fullPath: '/settings/merchants'
+      preLoaderRoute: typeof SettingsMerchantsRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/categories': {
+      id: '/settings/categories'
+      path: '/categories'
+      fullPath: '/settings/categories'
+      preLoaderRoute: typeof SettingsCategoriesRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/api-key': {
+      id: '/settings/api-key'
+      path: '/api-key'
+      fullPath: '/settings/api-key'
+      preLoaderRoute: typeof SettingsApiKeyRouteImport
+      parentRoute: typeof SettingsRoute
     }
     '/_authed/transactions': {
       id: '/_authed/transactions'
@@ -175,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedBudgetsRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_auth/verify-2fa': {
+      id: '/_auth/verify-2fa'
+      path: '/verify-2fa'
+      fullPath: '/verify-2fa'
+      preLoaderRoute: typeof AuthVerify2faRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/register': {
       id: '/_auth/register'
       path: '/register'
@@ -189,43 +397,90 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_authed/accounts/$accountId': {
+      id: '/_authed/accounts/$accountId'
+      path: '/accounts/$accountId'
+      fullPath: '/accounts/$accountId'
+      preLoaderRoute: typeof AuthedAccountsAccountIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
   }
 }
 
 interface AuthRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthVerify2faRoute: typeof AuthVerify2faRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  AuthVerify2faRoute: AuthVerify2faRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface AuthedRouteChildren {
-  AuthedAccountsAccountIdRoute: typeof AuthedAccountsAccountIdRoute
   AuthedBudgetsRoute: typeof AuthedBudgetsRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedTransactionsRoute: typeof AuthedTransactionsRoute
+  AuthedAccountsAccountIdRoute: typeof AuthedAccountsAccountIdRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
-  AuthedAccountsAccountIdRoute: AuthedAccountsAccountIdRoute,
   AuthedBudgetsRoute: AuthedBudgetsRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedTransactionsRoute: AuthedTransactionsRoute,
+  AuthedAccountsAccountIdRoute: AuthedAccountsAccountIdRoute,
 }
 
 const AuthedRouteWithChildren =
   AuthedRoute._addFileChildren(AuthedRouteChildren)
 
+interface SettingsRouteChildren {
+  SettingsApiKeyRoute: typeof SettingsApiKeyRoute
+  SettingsCategoriesRoute: typeof SettingsCategoriesRoute
+  SettingsMerchantsRoute: typeof SettingsMerchantsRoute
+  SettingsPreferencesRoute: typeof SettingsPreferencesRoute
+  SettingsProfileRoute: typeof SettingsProfileRoute
+  SettingsRulesRoute: typeof SettingsRulesRoute
+  SettingsSecurityRoute: typeof SettingsSecurityRoute
+  SettingsTagsRoute: typeof SettingsTagsRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsApiKeyRoute: SettingsApiKeyRoute,
+  SettingsCategoriesRoute: SettingsCategoriesRoute,
+  SettingsMerchantsRoute: SettingsMerchantsRoute,
+  SettingsPreferencesRoute: SettingsPreferencesRoute,
+  SettingsProfileRoute: SettingsProfileRoute,
+  SettingsRulesRoute: SettingsRulesRoute,
+  SettingsSecurityRoute: SettingsSecurityRoute,
+  SettingsTagsRoute: SettingsTagsRoute,
+  SettingsIndexRoute: SettingsIndexRoute,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   AuthedRoute: AuthedRouteWithChildren,
+  SettingsRoute: SettingsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
