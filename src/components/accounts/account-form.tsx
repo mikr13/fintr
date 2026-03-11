@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { api } from "convex/_generated/api.js";
+import type { Id } from "convex/_generated/dataModel.js";
 import { useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
-import type { Id } from "../../../convex/_generated/dataModel.js";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "~/components/ui/dialog";
-import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -25,7 +26,6 @@ import {
   CURRENCIES,
   type AccountTypeId,
 } from "~/lib/constants";
-import { toast } from "sonner";
 
 interface AccountFormProps {
   open: boolean;

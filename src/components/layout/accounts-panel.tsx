@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { api } from "convex/_generated/api.js";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
 import { PanelLeftClose, PanelLeftOpen, Wallet } from "lucide-react";
-import { formatCurrency } from "~/lib/utils";
-import { ACCOUNT_TYPES } from "~/lib/constants";
-import { Button } from "~/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { ScrollArea } from "~/components/ui/scroll-area";
-import { PlusIcon } from "~/components/icons/plus";
+import { useState } from "react";
 import { AccountCard } from "~/components/accounts/account-card";
-import { AccountTypePicker } from "~/components/accounts/account-type-picker";
 import { AccountForm } from "~/components/accounts/account-form";
+import { AccountTypePicker } from "~/components/accounts/account-type-picker";
+import { PlusIcon } from "~/components/icons/plus";
+import { Button } from "~/components/ui/button";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { ACCOUNT_TYPES } from "~/lib/constants";
+import { formatCurrency } from "~/lib/utils";
 
 type AccountTab = "assets" | "debts" | "all";
 

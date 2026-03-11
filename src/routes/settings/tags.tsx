@@ -1,11 +1,11 @@
-import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
-import type { Id } from "../../../convex/_generated/dataModel.js";
+import { api } from "convex/_generated/api.js";
+import type { Id } from "convex/_generated/dataModel.js";
+import { useMutation, useQuery } from "convex/react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { Card, CardContent } from "~/components/ui/card";
 import {
   Dialog,
@@ -13,8 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Plus, Pencil, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 
 export const Route = createFileRoute("/settings/tags")({
   component: TagsPage,

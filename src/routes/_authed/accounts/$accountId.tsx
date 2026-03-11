@@ -1,21 +1,20 @@
-import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api.js";
-import type { Id } from "../../../../convex/_generated/dataModel.js";
+import { useMutation, useQuery } from "convex/react";
+import { format, parseISO } from "date-fns";
 import {
-  Wallet,
-  TrendingUp,
-  Home,
   Car,
   CreditCard,
+  Home,
   Landmark,
-  Plus,
   Minus,
   Pencil,
+  Plus,
   Trash2,
+  TrendingUp,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
+import { useState } from "react";
 import {
   Area,
   AreaChart,
@@ -25,11 +24,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { format, parseISO } from "date-fns";
-import { cn, formatCurrency, formatDate } from "~/lib/utils";
-import { ACCOUNT_TYPES, PERIOD_OPTIONS, type AccountTypeId } from "~/lib/constants";
-import { Button } from "~/components/ui/button";
+import { toast } from "sonner";
+import { AccountForm } from "~/components/accounts/account-form";
+import { PageTransition } from "~/components/layout/page-transition";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   Dialog,
@@ -40,9 +39,10 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { Separator } from "~/components/ui/separator";
-import { AccountForm } from "~/components/accounts/account-form";
-import { PageTransition } from "~/components/layout/page-transition";
-import { toast } from "sonner";
+import { ACCOUNT_TYPES, PERIOD_OPTIONS, type AccountTypeId } from "~/lib/constants";
+import { cn, formatCurrency, formatDate } from "~/lib/utils";
+import { api } from "../convex/_generated/api.js";
+import type { Id } from "../convex/_generated/dataModel.js";
 
 export const Route = createFileRoute("/_authed/accounts/$accountId")({
   component: AccountDetailPage,
@@ -260,142 +260,142 @@ function AccountDetailPage() {
 
   return (
     <PageTransition>
-    <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
-          <div
-            className={cn(
-              "flex h-12 w-12 items-center justify-center rounded-xl",
-              TYPE_COLORS[account.type as AccountTypeId] ??
+      <div className="mx-auto max-w-4xl space-y-6">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-xl",
+                TYPE_COLORS[account.type as AccountTypeId] ??
                 "bg-muted text-muted-foreground",
-            )}
-          >
-            <Icon className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="font-heading text-2xl font-bold tracking-tight">
-                {account.name}
-              </h1>
-              <Badge variant="secondary" className="text-xs">
-                {typeDef?.name ?? account.type}
-              </Badge>
-              {account.subtype && (
-                <Badge variant="outline" className="text-xs">
-                  {account.subtype}
-                </Badge>
               )}
+            >
+              <Icon className="h-6 w-6" />
             </div>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              Created {formatDate(new Date(account._creationTime))}
-            </p>
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h1 className="font-heading text-2xl font-bold tracking-tight">
+                  {account.name}
+                </h1>
+                <Badge variant="secondary" className="text-xs">
+                  {typeDef?.name ?? account.type}
+                </Badge>
+                {account.subtype && (
+                  <Badge variant="outline" className="text-xs">
+                    {account.subtype}
+                  </Badge>
+                )}
+              </div>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                Created {formatDate(new Date(account._creationTime))}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => setEditOpen(true)}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            Edit
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 text-destructive hover:bg-destructive/10 hover:text-destructive"
-            onClick={() => setDeleteOpen(true)}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            Delete
-          </Button>
-        </div>
-      </div>
-
-      <Card>
-        <CardContent className="py-6">
-          <p className="text-sm text-muted-foreground">
-            {account.isDebt ? "Amount owed" : "Current balance"}
-          </p>
-          <p
-            className={cn(
-              "mt-1 font-heading text-4xl font-bold tabular-nums tracking-tight",
-              account.isDebt ? "text-negative" : "text-positive",
-            )}
-          >
-            {formatCurrency(account.balance, account.currency)}
-          </p>
-        </CardContent>
-      </Card>
-
-      <BalanceChart
-        accountId={account._id}
-        currency={account.currency}
-        isDebt={account.isDebt}
-      />
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-medium">Transactions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-border">
-            <p className="text-sm text-muted-foreground">
-              Transactions for this account
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <AccountForm
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        mode="edit"
-        accountType={{
-          id: (account.type as AccountTypeId) ?? "cash",
-          name: typeDef?.name ?? account.type,
-          isDebt: account.isDebt,
-        }}
-        defaultValues={{
-          _id: account._id,
-          name: account.name,
-          balance: account.balance,
-          currency: account.currency,
-          subtype: account.subtype,
-        }}
-      />
-
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="font-heading">Delete account</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete{" "}
-              <span className="font-medium text-foreground">
-                {account.name}
-              </span>
-              ? This will permanently remove all balance history. This action
-              cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <Separator />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteOpen(false)}>
-              Cancel
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setEditOpen(true)}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Edit
             </Button>
             <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleting}
+              variant="outline"
+              size="sm"
+              className="gap-1.5 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              onClick={() => setDeleteOpen(true)}
             >
-              {deleting ? "Deleting..." : "Delete account"}
+              <Trash2 className="h-3.5 w-3.5" />
+              Delete
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+          </div>
+        </div>
+
+        <Card>
+          <CardContent className="py-6">
+            <p className="text-sm text-muted-foreground">
+              {account.isDebt ? "Amount owed" : "Current balance"}
+            </p>
+            <p
+              className={cn(
+                "mt-1 font-heading text-4xl font-bold tabular-nums tracking-tight",
+                account.isDebt ? "text-negative" : "text-positive",
+              )}
+            >
+              {formatCurrency(account.balance, account.currency)}
+            </p>
+          </CardContent>
+        </Card>
+
+        <BalanceChart
+          accountId={account._id}
+          currency={account.currency}
+          isDebt={account.isDebt}
+        />
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Transactions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-border">
+              <p className="text-sm text-muted-foreground">
+                Transactions for this account
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <AccountForm
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          mode="edit"
+          accountType={{
+            id: (account.type as AccountTypeId) ?? "cash",
+            name: typeDef?.name ?? account.type,
+            isDebt: account.isDebt,
+          }}
+          defaultValues={{
+            _id: account._id,
+            name: account.name,
+            balance: account.balance,
+            currency: account.currency,
+            subtype: account.subtype,
+          }}
+        />
+
+        <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="font-heading">Delete account</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete{" "}
+                <span className="font-medium text-foreground">
+                  {account.name}
+                </span>
+                ? This will permanently remove all balance history. This action
+                cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <Separator />
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDeleteOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting..." : "Delete account"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </PageTransition>
   );
 }

@@ -1,7 +1,9 @@
-import { useState, useRef, useCallback, useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { api } from "convex/_generated/api.js";
+import type { Id } from "convex/_generated/dataModel.js";
 import { useAction } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FingerprintIcon } from "~/components/icons/fingerprint";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -11,9 +13,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import { FingerprintIcon } from "~/components/icons/fingerprint";
 import { cn } from "~/lib/utils";
-import type { Id } from "../../../convex/_generated/dataModel.js";
 
 export const Route = createFileRoute("/_auth/verify-2fa")({
   component: Verify2FAPage,

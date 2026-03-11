@@ -1,18 +1,30 @@
-import { useState, useCallback } from "react";
+import { api } from "convex/_generated/api.js";
+import type { Id } from "convex/_generated/dataModel.js";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
-import type { Id } from "../../../convex/_generated/dataModel.js";
+import {
+  ArrowRightLeft,
+  CalendarIcon,
+  ChevronDown,
+  Minus,
+  Plus,
+} from "lucide-react";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "~/components/ui/button";
+import { Calendar } from "~/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Button } from "~/components/ui/button";
-import { Textarea } from "~/components/ui/textarea";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -20,22 +32,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import { Calendar } from "~/components/ui/calendar";
-import { cn, formatDate } from "~/lib/utils";
-import {
-  Minus,
-  Plus,
-  ArrowRightLeft,
-  CalendarIcon,
-  ChevronDown,
-} from "lucide-react";
-import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Textarea } from "~/components/ui/textarea";
 import type { TransactionType } from "~/lib/constants";
+import { cn, formatDate } from "~/lib/utils";
 
 interface EditTransaction {
   _id: Id<"transactions">;
@@ -90,19 +90,19 @@ export function TransactionForm({
 
   const accounts = useQuery(api.accounts.list) as
     | Array<{
-        _id: Id<"accounts">;
-        name: string;
-        currency: string;
-        type: string;
-      }>
+      _id: Id<"accounts">;
+      name: string;
+      currency: string;
+      type: string;
+    }>
     | undefined;
   const categories = useQuery(api.categories.list) as
     | Array<{
-        _id: Id<"categories">;
-        name: string;
-        type: string;
-        color?: string;
-      }>
+      _id: Id<"categories">;
+      name: string;
+      type: string;
+      color?: string;
+    }>
     | undefined;
 
   const createTx = useMutation(api.transactions.create);

@@ -1,3 +1,7 @@
+import type { Id } from "convex/_generated/dataModel.js";
+import { ChevronLeft, ChevronRight, Inbox, Trash2 } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -6,11 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Button } from "~/components/ui/button";
 import { cn, formatCurrency, formatDate } from "~/lib/utils";
-import { Inbox, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
-import type { Id } from "../../../convex/_generated/dataModel.js";
 
 interface Transaction {
   _id: Id<"transactions">;
@@ -107,65 +107,65 @@ export function TransactionTable({
           <TableBody>
             {isLoading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell colSpan={6}>
-                      <div className="h-5 w-full animate-pulse rounded bg-muted" />
-                    </TableCell>
-                  </TableRow>
-                ))
+                <TableRow key={i}>
+                  <TableCell colSpan={6}>
+                    <div className="h-5 w-full animate-pulse rounded bg-muted" />
+                  </TableCell>
+                </TableRow>
+              ))
               : transactions.map((tx) => (
-                  <TableRow
-                    key={tx._id}
-                    className="cursor-pointer"
-                    data-state={selectedIds.has(tx._id) ? "selected" : undefined}
-                    onClick={() => onRowClick(tx)}
-                  >
-                    <TableCell onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={selectedIds.has(tx._id)}
-                        onCheckedChange={() => toggleOne(tx._id)}
-                        aria-label={`Select ${tx.description}`}
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {tx.description}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {tx.accountName}
-                    </TableCell>
-                    <TableCell>
-                      {tx.categoryName ? (
-                        <span className="inline-flex items-center gap-1.5">
-                          {tx.categoryColor && (
-                            <span
-                              className="inline-block h-2 w-2 rounded-full"
-                              style={{ backgroundColor: tx.categoryColor }}
-                            />
-                          )}
-                          <span className="text-muted-foreground">
-                            {tx.categoryName}
-                          </span>
+                <TableRow
+                  key={tx._id}
+                  className="cursor-pointer"
+                  data-state={selectedIds.has(tx._id) ? "selected" : undefined}
+                  onClick={() => onRowClick(tx)}
+                >
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      checked={selectedIds.has(tx._id)}
+                      onCheckedChange={() => toggleOne(tx._id)}
+                      aria-label={`Select ${tx.description}`}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {tx.description}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {tx.accountName}
+                  </TableCell>
+                  <TableCell>
+                    {tx.categoryName ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        {tx.categoryColor && (
+                          <span
+                            className="inline-block h-2 w-2 rounded-full"
+                            style={{ backgroundColor: tx.categoryColor }}
+                          />
+                        )}
+                        <span className="text-muted-foreground">
+                          {tx.categoryName}
                         </span>
-                      ) : (
-                        <span className="text-muted-foreground/50">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {formatDate(tx.date)}
-                    </TableCell>
-                    <TableCell
-                      className={cn(
-                        "text-right font-mono tabular-nums",
-                        tx.type === "income" && "text-emerald-500",
-                        tx.type === "expense" && "text-red-500",
-                        tx.type === "transfer" && "text-blue-500",
-                      )}
-                    >
-                      {tx.type === "income" ? "+" : tx.type === "expense" ? "−" : ""}
-                      {formatCurrency(tx.amount, tx.currency)}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground/50">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(tx.date)}
+                  </TableCell>
+                  <TableCell
+                    className={cn(
+                      "text-right font-mono tabular-nums",
+                      tx.type === "income" && "text-emerald-500",
+                      tx.type === "expense" && "text-red-500",
+                      tx.type === "transfer" && "text-blue-500",
+                    )}
+                  >
+                    {tx.type === "income" ? "+" : tx.type === "expense" ? "−" : ""}
+                    {formatCurrency(tx.amount, tx.currency)}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>

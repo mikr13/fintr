@@ -1,22 +1,22 @@
-import { useState, useMemo } from "react";
+import { api } from "convex/_generated/api.js";
 import { useQuery } from "convex/react";
+import { useMemo, useState } from "react";
 import {
-  AreaChart,
   Area,
-  XAxis,
-  Tooltip,
+  AreaChart,
   ResponsiveContainer,
+  Tooltip,
+  XAxis,
 } from "recharts";
-import { api } from "../../../convex/_generated/api.js";
+import { TrendingDownIcon } from "~/components/icons/trending-down";
+import { TrendingUpIcon } from "~/components/icons/trending-up";
 import {
   Card,
   CardContent,
   CardHeader,
 } from "~/components/ui/card";
+import { cn, formatCurrency, formatDate } from "~/lib/utils";
 import { PeriodSelector } from "./period-selector";
-import { TrendingUpIcon } from "~/components/icons/trending-up";
-import { TrendingDownIcon } from "~/components/icons/trending-down";
-import { formatCurrency, formatDate, cn } from "~/lib/utils";
 
 interface ChartTooltipProps {
   active?: boolean;

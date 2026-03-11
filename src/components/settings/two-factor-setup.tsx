@@ -1,8 +1,8 @@
-import { useState, useRef, useCallback } from "react";
+import { api } from "convex/_generated/api.js";
 import { useAction, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
+import { useCallback, useRef, useState } from "react";
+import { ShieldCheckIcon } from "~/components/icons/shield-check";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import {
   Card,
   CardContent,
@@ -10,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
-import { ShieldCheckIcon } from "~/components/icons/shield-check";
 import { cn } from "~/lib/utils";
 
 type SetupStep = "idle" | "qr" | "verify" | "recovery" | "done";

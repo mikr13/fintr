@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { api } from "convex/_generated/api.js";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
-import { formatCurrency, cn } from "~/lib/utils";
-import { ACCOUNT_TYPES } from "~/lib/constants";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
+import { ACCOUNT_TYPES } from "~/lib/constants";
+import { cn, formatCurrency } from "~/lib/utils";
 
 const TYPE_COLORS: Record<string, string> = {
   cash: "#3b82f6",

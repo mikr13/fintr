@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { api } from "convex/_generated/api.js";
 import { useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
-import { useCurrentUser } from "~/hooks/use-current-user";
-import { useTheme } from "~/hooks/use-theme";
+import { Monitor, Moon, Sun } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import {
@@ -12,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { useCurrentUser } from "~/hooks/use-current-user";
+import { useTheme } from "~/hooks/use-theme";
 import { CURRENCIES, DATE_FORMATS, PERIOD_OPTIONS } from "~/lib/constants";
 import { cn } from "~/lib/utils";
-import { Sun, Moon, Monitor } from "lucide-react";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/settings/preferences")({
   component: PreferencesPage,

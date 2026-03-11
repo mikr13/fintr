@@ -1,11 +1,19 @@
-import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api.js";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
+import { api } from "convex/_generated/api.js";
+import { useMutation, useQuery } from "convex/react";
+import { Activity, Check, Clock, Copy, Key, ShieldAlert, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
+import { Input } from "~/components/ui/input";
 import {
   Table,
   TableBody,
@@ -14,15 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "~/components/ui/dialog";
 import { formatDate, formatRelativeDate } from "~/lib/utils";
-import { Key, Copy, Check, Trash2, ShieldAlert, Clock, Activity } from "lucide-react";
 
 export const Route = createFileRoute("/settings/api-key")({
   component: ApiKeyPage,
